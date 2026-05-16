@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeClick Portal</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3ee;--surface:#ffffff;--surface2:#eeeee8;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);
+  --text:#1a1a18;--text2:#52524e;--text3:#8a8a82;
+  --blue:#185FA5;--blue-l:#E6F1FB;--blue-m:#378ADD;--blue-d:#0C447C;--blue-t:#0C447C;
+  --green-l:#EAF3DE;--green-t:#27500A;--green-b:#b8da8f;--green-i:#3B6D11;
+  --amber-l:#FAEEDA;--amber-t:#633806;--amber-i:#854F0B;
+  --red-l:#FCEBEB;--red-t:#791F1F;--red-i:#A32D2D;
+  --gray-l:#F1EFE8;--gray-t:#444441;--gray-i:#5F5E5A;
+  --purple-l:#EEEDFE;--purple-t:#3C3489;--purple-i:#534AB7;
+  --r:12px;--rs:8px;
+}
+[data-theme=dark]{
+  --bg:#181816;--surface:#232320;--surface2:#2b2b28;
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.16);
+  --text:#f0efe9;--text2:#a8a89e;--text3:#646460;
+  --blue:#1a6db8;--blue-l:#0c2a4a;--blue-m:#378ADD;--blue-d:#85B7EB;--blue-t:#85B7EB;
+  --green-l:#173404;--green-t:#C0DD97;--green-b:#3B6D11;--green-i:#97C459;
+  --amber-l:#412402;--amber-t:#FAC775;--amber-i:#EF9F27;
+  --red-l:#501313;--red-t:#F7C1C1;--red-i:#F09595;
+  --gray-l:#2C2C2A;--gray-t:#D3D1C7;--gray-i:#888780;
+  --purple-l:#26215C;--purple-t:#CECBF6;--purple-i:#AFA9EC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;font-size:16px;line-height:1.6}
+.wrap{max-width:940px;margin:0 auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
+.hdr{background:var(--blue);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.hdr-name{color:#fff;font-size:19px;font-weight:500}
+.hdr-sub{color:rgba(255,255,255,.72);font-size:12px;margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.hbtn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:var(--rs);color:#fff;cursor:pointer;padding:6px 11px;font-size:13px;font-weight:500;font-family:inherit;transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.hbtn:hover{background:rgba(255,255,255,.3)}
+.hbtn i{font-size:15px}
+.dvdr{width:1px;height:22px;background:rgba(255,255,255,.25);flex-shrink:0}
+.greet{background:var(--blue-l);border:1px solid var(--blue-m);border-radius:var(--r);padding:13px 18px;display:flex;align-items:center;gap:10px}
+.greet i{font-size:20px;color:var(--blue-t);flex-shrink:0}
+.greet p{color:var(--blue-t);font-size:15px}
+.srch-wrap{background:var(--surface);border:1px solid var(--border2);border-radius:999px;padding:11px 18px;display:flex;align-items:center;gap:10px}
+.srch-wrap i{font-size:20px;color:var(--text3)}
+.srch-wrap input{border:none;background:transparent;font-size:16px;color:var(--text);outline:none;flex:1;font-family:inherit}
+.srch-wrap input::placeholder{color:var(--text3)}
+.lbl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:0 4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;user-select:none}
+.card:hover{border-color:var(--blue-m);background:var(--surface2)}
+.card:active{transform:scale(.98)}
+.card.active{border:2px solid var(--blue-m);background:var(--blue-l)}
+.cicon{width:52px;height:52px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center}
+.cicon i{font-size:26px}
+.ctitle{font-size:14px;font-weight:500;color:var(--text);text-align:center;line-height:1.3}
+.csub{font-size:11px;color:var(--text2);text-align:center}
+.detail{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:20px;display:none;animation:fi .2s ease}
+.detail.show{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.dh{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.d-iw{width:42px;height:42px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.d-iw i{font-size:21px}
+.d-title{font-size:17px;font-weight:500;color:var(--text)}
+.steps{list-style:none;display:flex;flex-direction:column;gap:9px}
+.sitem{display:flex;align-items:flex-start;gap:11px}
+.snum{width:26px;height:26px;border-radius:50%;background:var(--blue-l);color:var(--blue-t);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+.stxt{font-size:15px;color:var(--text);line-height:1.6}
+.links-section{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
+.links-lbl{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:10px;letter-spacing:.05em;text-transform:uppercase}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px}
+.lcard{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s}
+.lcard:hover{border-color:var(--blue-m);background:var(--blue-l)}
+.l-icon{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.l-icon i{font-size:18px}
+.l-name{font-size:13px;font-weight:500;color:var(--text)}
+.l-desc{font-size:11px;color:var(--text2);margin-top:1px}
+.l-arrow{margin-left:auto;font-size:14px;color:var(--text3);flex-shrink:0}
+[dir=rtl] .l-arrow{margin-left:0;margin-right:auto;transform:scaleX(-1)}
+.emerg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:14px}
+.ecard{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 13px;display:flex;align-items:center;gap:10px}
+.e-ic{width:36px;height:36px;border-radius:6px;background:var(--red-l);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.e-ic i{font-size:18px;color:var(--red-i)}
+.e-num{font-size:18px;font-weight:500;color:var(--red-i)}
+.e-lbl{font-size:11px;color:var(--text2);margin-top:1px}
+.helpbar{background:var(--green-l);border:1px solid var(--green-b);border-radius:var(--r);padding:15px 17px;display:flex;align-items:flex-start;gap:13px}
+.helpbar>i{font-size:24px;color:var(--green-i);flex-shrink:0;margin-top:3px}
+.helpbar p{font-size:14px;color:var(--green-t);line-height:1.65}
+.helpbar strong{font-weight:500}
+.footer{text-align:center;font-size:12px;color:var(--text3);padding:4px 0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hdr">
+  <div class="hdr-l">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/>
+      <path d="M20 7L9 12v8c0 6.2 4.7 12 11 13.5C27.3 32 32 26.2 32 20v-8L20 7z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M15.5 20.5l3 3 6-6.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <div class="hdr-name" id="h-name">SafeClick Portal</div>
+      <div class="hdr-sub" id="h-sub">Your simple guide to the internet</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <span style="color:rgba(255,255,255,.7);font-size:12px" id="h-tsize">Text size</span>
+    <button class="hbtn" onclick="changeSize(-1)">A−</button>
+    <button class="hbtn" onclick="changeSize(1)">A+</button>
+    <div class="dvdr"></div>
+    <button class="hbtn" onclick="toggleLang()" id="langBtn"><i class="ti ti-language"></i><span id="langLabel">العربية</span></button>
+    <button class="hbtn" onclick="toggleTheme()"><i class="ti ti-moon" id="themeIcon"></i></button>
+  </div>
+</header>
+
+<div class="greet">
+  <i class="ti ti-sun"></i>
+  <p id="greet-text">Good day! <strong>What would you like to do today?</strong> Tap any service below.</p>
+</div>
+
+<div class="srch-wrap">
+  <i class="ti ti-search"></i>
+  <input type="text" id="searchInput" oninput="filterCards()" aria-label="Search">
+</div>
+
+<div class="lbl" id="lbl-choose">Choose a service</div>
+
+<div class="grid" id="servicesGrid">
+  <div class="card" id="card-video" onclick="showDetail('video')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--blue-l)"><i class="ti ti-video" style="color:var(--blue-t)"></i></div>
+    <div class="ctitle" data-key="video-title">Video Call Family</div>
+    <div class="csub" data-key="video-sub">WhatsApp, Zoom &amp; more</div>
+  </div>
+  <div class="card" id="card-health" onclick="showDetail('health')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--green-l)"><i class="ti ti-stethoscope" style="color:var(--green-i)"></i></div>
+    <div class="ctitle" data-key="health-title">Book a Doctor</div>
+    <div class="csub" data-key="health-sub">Health appointments</div>
+  </div>
+  <div class="card" id="card-gov" onclick="showDetail('gov')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--amber-l)"><i class="ti ti-building-bank" style="color:var(--amber-i)"></i></div>
+    <div class="ctitle" data-key="gov-title">Government Services</div>
+    <div class="csub" data-key="gov-sub">Absher, Najiz &amp; more</div>
+  </div>
+  <div class="card" id="card-bill" onclick="showDetail('bill')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--amber-l)"><i class="ti ti-receipt" style="color:var(--amber-i)"></i></div>
+    <div class="ctitle" data-key="bill-title">Pay a Bill</div>
+    <div class="csub" data-key="bill-sub">Utilities &amp; telecom</div>
+  </div>
+  <div class="card" id="card-safe" onclick="showDetail('safe')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--red-l)"><i class="ti ti-shield-lock" style="color:var(--red-i)"></i></div>
+    <div class="ctitle" data-key="safe-title">Stay Safe Online</div>
+    <div class="csub" data-key="safe-sub">Scam &amp; fraud tips</div>
+  </div>
+  <div class="card" id="card-help" onclick="showDetail('help')" role="button" tabindex="0">
+    <div class="cicon" style="background:var(--purple-l)"><i class="ti ti-help-circle" style="color:var(--purple-i)"></i></div>
+    <div class="ctitle" data-key="help-title">Emergency &amp; Help</div>
+    <div class="csub" data-key="help-sub">Numbers &amp; support</div>
+  </div>
+</div>
+
+<div class="detail" id="detailPanel">
+  <div class="dh">
+    <div class="d-iw" id="d-icon-wrap"></div>
+    <div class="d-title" id="d-title"></div>
+  </div>
+  <ol class="steps" id="d-steps"></ol>
+  <div class="links-section" id="d-links-section" style="display:none"></div>
+</div>
+
+<div class="helpbar">
+  <i class="ti ti-phone-call"></i>
+  <p id="helpbar-text"><strong>Need help?</strong> A trained volunteer is available at your community center every Sunday from 10am–1pm. You can also call the digital helpline at <strong>920-000-000</strong>.</p>
+</div>
+
+<div class="footer" id="footer-txt">SafeClick Portal &mdash; Designed for seniors &mdash; Community Service Project</div>
+</div>
+
+<script>
+var lang='en',isDark=false,fontSize=16,currentKey=null;
+
+var tx={
+  en:{
+    'h-name':'SafeClick Portal','h-sub':'Your simple guide to the internet',
+    'h-tsize':'Text size','langLabel':'العربية',
+    'greet-text':'Good day! <strong>What would you like to do today?</strong> Tap any service below.',
+    'lbl-choose':'Choose a service',
+    'video-title':'Video Call Family','video-sub':'WhatsApp, Zoom &amp; more',
+    'health-title':'Book a Doctor','health-sub':'Health appointments',
+    'gov-title':'Government Services','gov-sub':'Absher, Najiz &amp; more',
+    'bill-title':'Pay a Bill','bill-sub':'Utilities &amp; telecom',
+    'safe-title':'Stay Safe Online','safe-sub':'Scam &amp; fraud tips',
+    'help-title':'Emergency &amp; Help','help-sub':'Numbers &amp; support',
+    'helpbar-text':'<strong>Need help?</strong> A trained volunteer is available at your community center every Sunday from 10am–1pm. You can also call the digital helpline at <strong>920-000-000</strong>.',
+    'footer-txt':'SafeClick Portal &mdash; Designed for seniors &mdash; Community Service Project',
+    'srch-ph':'Search for help (e.g. "pay bill", "call family")',
+    'links-lbl':'Quick access links','emerg-lbl':'Emergency Numbers'
+  },
+  ar:{
+    'h-name':'بوابة سيف كليك','h-sub':'دليلك البسيط لاستخدام الإنترنت',
+    'h-tsize':'حجم الخط','langLabel':'English',
+    'greet-text':'أهلاً وسهلاً! <strong>ماذا تريد أن تفعل اليوم؟</strong> اضغط على أي خدمة.',
+    'lbl-choose':'اختر خدمة',
+    'video-title':'مكالمة فيديو للعائلة','video-sub':'واتساب وزوم وأكثر',
+    'health-title':'حجز موعد طبي','health-sub':'المواعيد الصحية',
+    'gov-title':'الخدمات الحكومية','gov-sub':'أبشر ونجز وأكثر',
+    'bill-title':'دفع الفواتير','bill-sub':'الخدمات والاتصالات',
+    'safe-title':'الأمان الإلكتروني','safe-sub':'نصائح ضد الاحتيال',
+    'help-title':'الطوارئ والمساعدة','help-sub':'الأرقام والدعم',
+    'helpbar-text':'<strong>تحتاج مساعدة؟</strong> يتوفر متطوع مدرّب في مركز المجتمع كل أحد من 10 صباحاً إلى 1 ظهراً. يمكنك أيضاً الاتصال على خط المساعدة: <strong>920-000-000</strong>.',
+    'footer-txt':'بوابة سيف كليك &mdash; مصممة لكبار السن &mdash; مشروع خدمة مجتمعية',
+    'srch-ph':'ابحث عن مساعدة (مثل: "دفع فاتورة")',
+    'links-lbl':'روابط سريعة','emerg-lbl':'أرقام الطوارئ'
+  }
+};
+
+var services={
+  video:{
+    iconClass:'ti ti-video',iconBg:'var(--blue-l)',iconColor:'var(--blue-t)',
+    steps:{
+      en:['Make sure your phone or tablet is connected to Wi-Fi.','Open the app you want (WhatsApp, Zoom, or Telegram).','Tap the name of the family member you want to call.','Tap the video camera icon to start the video call.','Wait for them to answer — their face will appear on screen!'],
+      ar:['تأكد أن هاتفك أو جهازك متصل بالواي فاي.','افتح التطبيق الذي تريده (واتساب أو زوم أو تيليجرام).','اضغط على اسم الشخص الذي تريد مكالمته.','اضغط على أيقونة الكاميرا لبدء مكالمة الفيديو.','انتظر حتى يرد عليك — ستظهر صورته على الشاشة!']
+    },
+    links:[
+      {name:'WhatsApp Web',nameAr:'واتساب ويب',desc:'Chat & video calls',descAr:'محادثات ومكالمات',icon:'ti ti-brand-whatsapp',bg:'#d9f7d0',ic:'#128C7E',url:'https://web.whatsapp.com'},
+      {name:'Zoom',nameAr:'زوم',desc:'Video meetings',descAr:'اجتماعات الفيديو',icon:'ti ti-video',bg:'var(--blue-l)',ic:'var(--blue-t)',url:'https://zoom.us'},
+      {name:'Telegram Web',nameAr:'تيليجرام',desc:'Messaging & calls',descAr:'رسائل ومكالمات',icon:'ti ti-brand-telegram',bg:'#dff3fb',ic:'#0088cc',url:'https://web.telegram.org'},
+      {name:'Google Meet',nameAr:'جوجل ميت',desc:'Free video calls',descAr:'مكالمات مجانية',icon:'ti ti-device-tv',bg:'var(--green-l)',ic:'var(--green-i)',url:'https://meet.google.com'}
+    ]
+  },
+  health:{
+    iconClass:'ti ti-stethoscope',iconBg:'var(--green-l)',iconColor:'var(--green-i)',
+    steps:{
+      en:['You will need your national ID number ready.','Choose your nearest health center from the list.','Pick a date and time that suits you.','Confirm your booking — you will receive an SMS reminder.','Arrive 10 minutes early and bring your national ID card.'],
+      ar:['احضّر رقم هويتك الوطنية.','اختر أقرب مركز صحي إليك.','اختر التاريخ والوقت المناسب.','أكّد الحجز — ستصلك رسالة SMS تذكير.','احضر قبل الموعد بعشر دقائق وأحضر هويتك.']
+    },
+    links:[
+      {name:'Seha (صحتي)',nameAr:'تطبيق صحتي',desc:'MOH appointment booking',descAr:'حجز مواعيد وزارة الصحة',icon:'ti ti-heart-rate-monitor',bg:'var(--green-l)',ic:'var(--green-i)',url:'https://www.seha.sa'},
+      {name:'Mawid (مواعيد)',nameAr:'نظام مواعيد',desc:'Schedule clinic visits',descAr:'جدولة زيارات العيادات',icon:'ti ti-calendar-event',bg:'var(--blue-l)',ic:'var(--blue-t)',url:'https://mawid.moh.gov.sa'},
+      {name:'MOH Portal',nameAr:'بوابة وزارة الصحة',desc:'Ministry of Health',descAr:'وزارة الصحة السعودية',icon:'ti ti-building-hospital',bg:'var(--green-l)',ic:'var(--green-i)',url:'https://www.moh.gov.sa'}
+    ]
+  },
+  gov:{
+    iconClass:'ti ti-building-bank',iconBg:'var(--amber-l)',iconColor:'var(--amber-i)',
+    steps:{
+      en:['Go to the Absher website — the official Saudi government portal.','Log in using your national ID and your password.','Choose the service you need from the clear menu.','Follow the simple steps shown on screen.','Need help? Call the Absher hotline: 920-000-800.'],
+      ar:['اذهب إلى موقع أبشر — البوابة الحكومية الرسمية.','سجّل الدخول برقم هويتك وكلمة المرور.','اختر الخدمة التي تحتاجها.','اتبع الخطوات البسيطة على الشاشة.','تحتاج مساعدة؟ اتصل بخط أبشر: 920-000-800.']
+    },
+    links:[
+      {name:'Absher (أبشر)',nameAr:'أبشر',desc:'Main government portal',descAr:'البوابة الحكومية الرئيسية',icon:'ti ti-building-community',bg:'var(--amber-l)',ic:'var(--amber-i)',url:'https://www.absher.sa'},
+      {name:'Najiz (ناجز)',nameAr:'ناجز',desc:'Justice ministry services',descAr:'خدمات وزارة العدل',icon:'ti ti-scale',bg:'var(--amber-l)',ic:'var(--amber-i)',url:'https://www.najiz.sa'},
+      {name:'Tawakkalna',nameAr:'توكلنا',desc:'Health & government passes',descAr:'التصاريح الصحية والحكومية',icon:'ti ti-id-badge',bg:'var(--green-l)',ic:'var(--green-i)',url:'https://ta.sdaia.gov.sa'},
+      {name:'Etimad (اعتماد)',nameAr:'اعتماد',desc:'Government financial services',descAr:'الخدمات المالية الحكومية',icon:'ti ti-coin',bg:'var(--blue-l)',ic:'var(--blue-t)',url:'https://www.etimad.sa'},
+      {name:'Muqeem (مقيم)',nameAr:'مقيم',desc:'Residency & visa services',descAr:'خدمات الإقامة والتأشيرات',icon:'ti ti-passport',bg:'var(--purple-l)',ic:'var(--purple-i)',url:'https://www.muqeem.sa'}
+    ]
+  },
+  bill:{
+    iconClass:'ti ti-receipt',iconBg:'var(--amber-l)',iconColor:'var(--amber-i)',
+    steps:{
+      en:['Find your account number — it is printed on your paper bill.','Choose the company you want to pay from the links below.','Enter your account number on their website.','Choose payment method: Mada card or STC Pay.','Confirm payment and take a screenshot as proof.'],
+      ar:['ابحث عن رقم حسابك — مكتوب على الفاتورة الورقية.','اختر الشركة من الروابط أدناه.','أدخل رقم حسابك على موقعهم.','اختر طريقة الدفع: بطاقة مدى أو STC Pay.','أكّد الدفع وخذ لقطة شاشة كدليل.']
+    },
+    links:[
+      {name:'SEC (كهرباء)',nameAr:'شركة الكهرباء السعودية',desc:'Electricity bills',descAr:'فواتير الكهرباء',icon:'ti ti-bolt',bg:'var(--amber-l)',ic:'var(--amber-i)',url:'https://www.se.com.sa'},
+      {name:'NWC (مياه)',nameAr:'المياه الوطنية',desc:'Water bills',descAr:'فواتير المياه',icon:'ti ti-droplet',bg:'var(--blue-l)',ic:'var(--blue-t)',url:'https://www.nwc.com.sa'},
+      {name:'STC (اتصالات)',nameAr:'STC',desc:'Telecom — bills & recharge',descAr:'الاتصالات — فواتير وشحن',icon:'ti ti-wifi',bg:'var(--purple-l)',ic:'var(--purple-i)',url:'https://www.stc.com.sa'},
+      {name:'Mobily (موبايلي)',nameAr:'موبايلي',desc:'Telecom services',descAr:'خدمات الاتصالات',icon:'ti ti-signal-4g',bg:'var(--green-l)',ic:'var(--green-i)',url:'https://www.mobily.com.sa'},
+      {name:'Zain (زين)',nameAr:'زين',desc:'Telecom services',descAr:'خدمات الاتصالات',icon:'ti ti-antenna-bars-4',bg:'var(--red-l)',ic:'var(--red-i)',url:'https://www.sa.zain.com'},
+      {name:'STC Pay',nameAr:'STC Pay',desc:'Digital wallet & payments',descAr:'المحفظة الرقمية',icon:'ti ti-wallet',bg:'var(--purple-l)',ic:'var(--purple-i)',url:'https://www.stcpay.com.sa'}
+    ]
+  },
+  safe:{
+    iconClass:'ti ti-shield-lock',iconBg:'var(--red-l)',iconColor:'var(--red-i)',
+    steps:{
+      en:['NEVER share your password or OTP code with anyone — not even family or "bank employees".','If someone calls asking for money urgently, hang up and call your family first.','Real banks NEVER ask for your PIN or card number over the phone.','If a message says "You won a prize!" — it is a scam. Delete it immediately.','When in doubt, do NOT click any link. Ask a trusted person first.'],
+      ar:['لا تشارك كلمة المرور أو رمز OTP مع أحد — حتى العائلة أو "موظفي البنك".','إذا طلب أحد مالاً بشكل عاجل، أغلق الخط واتصل بعائلتك.','البنوك الحقيقية لا تطلب رمز البطاقة أو رقم الحساب عبر الهاتف أبداً.','إذا وصلتك رسالة "ربحت جائزة!" — فهي احتيال. احذفها فوراً.','إذا شككت في أي رابط، لا تضغط عليه. اسأل شخصاً تثق به.']
+    },
+    links:[
+      {name:'NCA Cyber Awareness',nameAr:'الوعي السيبراني — هيئة الأمن السيبراني',desc:'Official cybersecurity tips',descAr:'نصائح الأمن السيبراني الرسمية',icon:'ti ti-shield-check',bg:'var(--red-l)',ic:'var(--red-i)',url:'https://nca.gov.sa/ar/cyber-awareness/'},
+      {name:'CITC Consumer Protection',nameAr:'حماية المستهلك — هيئة الاتصالات',desc:'Telecom complaints',descAr:'شكاوى الاتصالات',icon:'ti ti-gavel',bg:'var(--amber-l)',ic:'var(--amber-i)',url:'https://www.citc.gov.sa/ar/consumers/Pages/default.aspx'},
+      {name:'Absher Report',nameAr:'الإبلاغ عبر أبشر',desc:'Report online fraud',descAr:'الإبلاغ عن الجرائم الإلكترونية',icon:'ti ti-flag',bg:'var(--red-l)',ic:'var(--red-i)',url:'https://www.absher.sa'}
+    ]
+  },
+  help:{
+    iconClass:'ti ti-help-circle',iconBg:'var(--purple-l)',iconColor:'var(--purple-i)',
+    isHelp:true,
+    steps:{
+      en:['Emergency numbers are listed below — all are free and available 24/7.','For digital help, visit the community center every Sunday 10am–1pm.','A trained volunteer will guide you one-on-one, free of charge.','Bring any device you use — phone, tablet, or laptop.','No question is too simple. We are here to help!'],
+      ar:['أرقام الطوارئ أدناه — كلها مجانية ومتاحة على مدار الساعة.','للمساعدة الرقمية، تفضل لمركز المجتمع كل أحد من 10 صباحاً إلى 1 ظهراً.','سيرشدك متطوع مدرّب بشكل شخصي ومجاني.','أحضر أي جهاز تستخدمه — هاتف أو جهاز لوحي.','لا يوجد سؤال بسيط جداً — نحن هنا لمساعدتك!']
+    },
+    emergency:[
+      {num:'911',label:'Police / Emergency',labelAr:'الشرطة / الطوارئ',icon:'ti ti-shield'},
+      {num:'997',label:'Civil Defense (Fire)',labelAr:'الدفاع المدني (حريق)',icon:'ti ti-flame'},
+      {num:'920020470',label:'Saudi Red Crescent',labelAr:'الهلال الأحمر السعودي',icon:'ti ti-heart-rate-monitor'},
+      {num:'19911',label:'Ministry of Health',labelAr:'وزارة الصحة',icon:'ti ti-stethoscope'},
+      {num:'19900',label:'Nazaha (Anti-Corruption)',labelAr:'نزاهة',icon:'ti ti-scale'},
+      {num:'1950',label:'Traffic Police',labelAr:'المرور',icon:'ti ti-car'}
+    ],
+    links:[
+      {name:'Community Center (Google Maps)',nameAr:'مركز المجتمع — خرائط جوجل',desc:'Find us on Google Maps',descAr:'ابحث عنا على الخريطة',icon:'ti ti-map-pin',bg:'var(--blue-l)',ic:'var(--blue-t)',url:'https://maps.google.com'},
+      {name:'Volunteer Helpline',nameAr:'خط المساعدة للمتطوعين',desc:'Call: 920-000-000',descAr:'اتصل: 920-000-000',icon:'ti ti-phone',bg:'var(--green-l)',ic:'var(--green-i)',url:'tel:920000000'}
+    ]
+  }
+};
+
+var detailTitles={
+  en:{video:'Video Call Family',health:'Book a Doctor Appointment',gov:'Government Services (Absher)',bill:'Pay a Bill Online',safe:'Staying Safe Online',help:'Emergency & Help'},
+  ar:{video:'مكالمة فيديو للعائلة',health:'حجز موعد طبي',gov:'الخدمات الحكومية (أبشر)',bill:'دفع الفواتير',safe:'الأمان الإلكتروني',help:'الطوارئ والمساعدة'}
+};
+
+var searchTags={
+  video:'video call family whatsapp zoom telegram meet مكالمة عائلة واتساب',
+  health:'doctor health appointment seha mawid moh طبيب صحة حجز',
+  gov:'government absher najiz tawakkalna etimad حكومة أبشر ناجز',
+  bill:'pay bill electricity water stc mobily zain فاتورة كهرباء مياه اتصالات',
+  safe:'safe online scam fraud nca security أمان احتيال',
+  help:'help emergency police fire ambulance مساعدة طوارئ شرطة'
+};
+
+function showDetail(key){
+  var s=services[key];currentKey=key;
+  document.querySelectorAll('.card').forEach(function(c){c.classList.remove('active')});
+  document.getElementById('card-'+key).classList.add('active');
+  var iw=document.getElementById('d-icon-wrap');
+  iw.style.background=s.iconBg;
+  iw.innerHTML='<i class="'+s.iconClass+'" style="font-size:21px;color:'+s.iconColor+'"></i>';
+  document.getElementById('d-title').textContent=detailTitles[lang][key];
+  document.getElementById('d-steps').innerHTML=s.steps[lang].map(function(st,i){
+    return '<li class="sitem"><span class="snum">'+(i+1)+'</span><span class="stxt">'+st+'</span></li>';
+  }).join('');
+  renderLinks(s);
+  var panel=document.getElementById('detailPanel');
+  panel.classList.remove('show');void panel.offsetWidth;panel.classList.add('show');
+  setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'nearest'})},50);
+}
+
+function renderLinks(s){
+  var sec=document.getElementById('d-links-section');
+  var html='';
+  if(s.isHelp&&s.emergency){
+    html+='<div class="links-lbl">'+tx[lang]['emerg-lbl']+'</div><div class="emerg-grid">';
+    s.emergency.forEach(function(e){
+      html+='<div class="ecard"><div class="e-ic"><i class="'+e.icon+'"></i></div><div><div class="e-num">'+e.num+'</div><div class="e-lbl">'+(lang==='ar'?e.labelAr:e.label)+'</div></div></div>';
+    });
+    html+='</div>';
+  }
+  if(s.links&&s.links.length){
+    html+='<div class="links-lbl" style="margin-top:'+(s.isHelp?'14px':'0')+'">'+tx[lang]['links-lbl']+'</div><div class="links-grid">';
+    s.links.forEach(function(l){
+      var n=lang==='ar'?l.nameAr:l.name;
+      var d=lang==='ar'?l.descAr:l.desc;
+      html+='<a class="lcard" href="'+l.url+'" target="_blank" rel="noopener noreferrer">'
+        +'<div class="l-icon" style="background:'+l.bg+'"><i class="'+l.icon+'" style="color:'+l.ic+'"></i></div>'
+        +'<div><div class="l-name">'+n+'</div><div class="l-desc">'+d+'</div></div>'
+        +'<i class="ti ti-chevron-right l-arrow"></i></a>';
+    });
+    html+='</div>';
+  }
+  if(html){sec.innerHTML=html;sec.style.display='block';}
+  else{sec.style.display='none';}
+}
+
+function changeSize(dir){
+  fontSize=Math.max(13,Math.min(22,fontSize+2*dir));
+  document.body.style.fontSize=fontSize+'px';
+}
+
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'');
+  document.getElementById('themeIcon').className=isDark?'ti ti-sun':'ti ti-moon';
+}
+
+function toggleLang(){
+  lang=lang==='en'?'ar':'en';
+  var root=document.getElementById('html-root');
+  root.setAttribute('lang',lang);
+  root.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  var t=tx[lang];
+  Object.keys(t).forEach(function(k){
+    var el=document.getElementById(k);
+    if(el)el.innerHTML=t[k];
+  });
+  document.querySelectorAll('[data-key]').forEach(function(el){
+    var k=el.getAttribute('data-key');
+    if(t[k])el.innerHTML=t[k];
+  });
+  document.getElementById('searchInput').placeholder=t['srch-ph'];
+  if(currentKey)showDetail(currentKey);
+}
+
+function filterCards(){
+  var q=document.getElementById('searchInput').value.toLowerCase().trim();
+  Object.keys(searchTags).forEach(function(k){
+    document.getElementById('card-'+k).style.display=(!q||searchTags[k].includes(q))?'':'none';
+  });
+}
+
+document.querySelectorAll('.card').forEach(function(c){
+  c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')c.click();});
+});
+document.getElementById('searchInput').placeholder=tx.en['srch-ph'];
+if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)toggleTheme();
+</script>
+</body>
+</html>

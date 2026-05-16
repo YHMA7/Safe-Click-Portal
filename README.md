@@ -9,7 +9,7 @@
 
 **A simplified, senior-friendly web portal designed to help elderly citizens navigate essential digital services in Saudi Arabia.**
 
-[🌐 Live Demo](https://yhma7.github.io/Safe-Click-Portal/) · [📋 Project Proposal](#about-the-project) · [🚀 Getting Started](#getting-started)
+[🌐 Live Demo](https://yhma7.github.io/Safe-Click-Portal/) · [📋 Project Proposal](#about-the-project) · [🚀 Getting Started](https://github.com/YHMA7/Safe-Click-Portal#-getting-started)
 
 </div>
 
